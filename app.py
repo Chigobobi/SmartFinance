@@ -84,6 +84,11 @@ def register():
     finally:
         conn.close()
 
+@app.route('/health')
+def health_check():
+    """Health check untuk Railway"""
+    return jsonify({'status': 'OK', 'message': 'Aplikasi berjalan dengan baik'}), 200
+
 """Buat route untuk login"""
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -367,4 +372,7 @@ def generate_pdf(user_id, period):
 
 """ jalankan aplikasi """
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Ambil port dari environment Railway, atau default ke 5000
+    port = int(os.environ.get('PORT', 5000))
+    # Jalankan di semua interface (0.0.0.0) agar bisa diakses dari luar
+    app.run(host='0.0.0.0', port=port, debug=False)  # debug=False untuk production
