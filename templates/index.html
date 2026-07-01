@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFinance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- HOME PAGE - Halaman depan -->
+    <div id="page-home" class="page active">
+        <div class="hero-badge">
+            <img src="{{url_for('asset', filename='logo_rmv.png')}}" alt="logo_smartfinance">
+        </div>
+        <h1 class="hero-title">Kelola keuangan</h1>
+        <p class="hero-sub">
+            Solusi, Manajemen, Anggaran, Rasional dan Terpercaya,
+            unduh laporan PDF - semuanya dalam satu aplikasi.
+        </p>
+        <div class="hero-btns">
+            <button class="btn btn-primary" onclick="showPage('register')">
+                Daftar Sekarang
+            </button>
+            <button class="btn btn-outline" onclick="showPage('login')">
+                Login
+            </button>
+        </div>
+        <div class="hero-features">
+            <span class="hero-feat">Multi-user aman</span>
+            <span class="hero-feat">Password terenkripsi</span>
+            <span class="hero-feat">Laporan PDF harian dan bulanan</span>
+            <span class="hero-feat">Dashboard real-time</span>
+        </div>
+    </div>
+
+    <!-- REGISTER PAGE - Halaman Register -->
+    <div id="page-register" class="page">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <img src="{{url_for('asset', filename='logo_rmv.png')}}" alt="logo_smartfinance">
+            </div>
+            <h2>Buat Akun Baru</h2>
+            <p>Mulai kelola keuangan anda hari ini</p>
+            <div id="reg-flash" class="flash-msg" style="display: none;"></div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="reg-username" placeholder="contoh:budi123">
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="reg-email" placeholder="email@gmail.com">
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="reg-password" placeholder="minimal 6 karakter">
+            </div>
+
+            <button class="btn-full btn-teal" onclick="doRegister()">Daftar</button>
+            <div class="auth-link">
+                Sudah punya akun? <a href="#" onclick="showPage('login')">Login </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN PAGE - Halaman Login -->
+    <div id="page-login" class="page">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <img src="{{url_for('asset', filename='logo_rmv.png')}}" alt="logo_smartfinance">
+            </div>
+            <h2>Masuk ke akun</h2>
+            <p>Selamat datang kembali</p>
+            <div id="login-flash" class="flash-msg" style="display: none;"></div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="login-username" placeholder="Username Anda">
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="login-password" placeholder="Password Anda">
+            </div>
+
+            <button class="btn-full btn-blue" onclick="doLogin()">Login</button>
+            <div class="auth-link">
+                Belum punya akun? <a href="#" onclick="showPage('register')">Daftar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD PAGE - Halaamn Utama Aplikasi -->
+    <div id="page-dashboard" class="page">
+
+        <header class="dash-header">
+            <div class="dash-logo">
+                <img src="{{url_for('asset', filename='logo_rmv.png')}}" alt="logo_smartfinance"><span>SmartFinance</span>
+            </div>
+            <div class="dash-user">
+                <span class="user-chip">👤 <span id="dash-username">User</span></span>
+                <button class="btn-logout" onclick="doLogout()">Logout</button>
+            </div>
+        </header>
+
+        <div class="dash-content">
+            <!-- 4b. Summary Cards - Kartu Ringkasan -->
+            <div class="summary-grid">
+                <div class="sum-card">
+                    <div class="sum-icon icon-green">📈</div>
+                    <div>
+                        <div class="sum-label">Total Pemasukan</div>
+                        <div class="sum-value val-green" id="sum-income">Rp 0</div>
+                    </div>
+                </div>
+                <div class="sum-card">
+                    <div class="sum-icon icon-red">📉</div>
+                    <div>
+                        <div class="sum-label">Total Pengeluaran</div>
+                        <div class="sum-value val-red" id="sum-expense">Rp 0</div>
+                    </div>
+                </div>
+                <div class="sum-card">
+                    <div class="sum-icon icon-blue">💼</div>
+                    <div>
+                        <div class="sum-label">Saldo</div>
+                        <div class="sum-value val-blue" id="sum-balance">Rp 0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4c. Panel Grid - Dua Kolom -->
+            <div class="panel-grid">
+                <!-- Kolom Kiri: Form + PDF -->
+                <div style="display:flex; flex-direction:column; gap:18px;">
+                    <!-- Form Tambah Transaksi -->
+                    <div class="panel">
+                        <div class="panel-title">➕ Tambah Transaksi</div>
+
+                        <div class="fld-row">
+                            <div class="fld">
+                                <label>Tipe</label>
+                                <select id="tx-type">
+                                    <option value="income">📈 Pemasukan</option>
+                                    <option value="expense">📉 Pengeluaran</option>
+                                </select>
+                            </div>
+                            <div class="fld">
+                                <label>Tanggal</label>
+                                <input type="date" id="tx-date">
+                            </div>
+                        </div>
+
+                        <div class="fld-row">
+                            <div class="fld">
+                                <label>Kategori</label>
+                                <input type="text" id="tx-category" placeholder="Makanan, Gaji, dll">
+                            </div>
+                        </div>
+
+                        <div class="fld-row">
+                            <div class="fld">
+                                <label>Jumlah (Rp)</label>
+                                <input type="number" id="tx-amount" placeholder="0" min="0">
+                            </div>
+                        </div>
+
+                        <div class="fld-row">
+                            <div class="fld">
+                                <label>Deskripsi (opsional)</label>
+                                <input type="text" id="tx-desc" placeholder="Keterangan transaksi...">
+                            </div>
+                        </div>
+
+                        <button class="btn-add" onclick="addTransaction()">
+                            ✅ Tambah Transaksi
+                        </button>
+                    </div>
+
+                    <!-- Panel PDF -->
+                    <div class="panel">
+                        <div class="panel-title">📄 Unduh Laporan</div>
+                        <div class="pdf-row">
+                            <button class="btn-pdf btn-pdf-daily" onclick="downloadPDF('daily')">
+                                📅 Laporan Harian
+                            </button>
+                            <button class="btn-pdf btn-pdf-monthly" onclick="downloadPDF('monthly')">
+                                📆 Laporan Bulanan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan: Tabel Transaksi -->
+                <div class="panel" style="min-width:0;">
+                    <div class="panel-title">
+                        📋 Riwayat Transaksi
+                        <span class="badge" id="tx-count">0</span>
+                    </div>
+
+                    <!-- Filter -->
+                    <div class="filter-bar">
+                        <label>Filter:</label>
+                        <select id="filter-type" onchange="renderTable()">
+                            <option value="all">Semua</option>
+                            <option value="income">Pemasukan</option>
+                            <option value="expense">Pengeluaran</option>
+                        </select>
+                        <input type="text" id="filter-search" placeholder="Cari kategori..." oninput="renderTable()"
+                            style="flex:1; min-width:120px;">
+                    </div>
+
+                    <!-- Tabel -->
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Tipe</th>
+                                    <th>Kategori</th>
+                                    <th>Jumlah</th>
+                                    <th>Deskripsi</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tx-tbody">
+                                <tr class="empty-row">
+                                    <td colspan="6">Belum ada transaksi. Tambah sekarang!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFIKASI POPUP -->
+    <div id="toast"></div>
+
+    <!-- JAVASCRIPT -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
